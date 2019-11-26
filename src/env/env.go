@@ -62,7 +62,7 @@ func (env *Env) getEnvData() *Env{
 	for _, line := range fileLines {
 		key, value, err := env.getKeyAndValue(line)
 		env.helper.LogError(err)
-		env.envData[key] = value
+		env.envData[key] = strings.TrimSpace(value)
 	}
 	return env
 }

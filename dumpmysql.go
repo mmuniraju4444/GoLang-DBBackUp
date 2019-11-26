@@ -7,6 +7,7 @@ import (
 	"helper"
 	"sync"
 	"fmt"
+	"strings"
 )
 type BackupData struct {
 	envData *env.Env
@@ -24,13 +25,16 @@ func Init() {
 }
 var wg sync.WaitGroup
 func main() {
-	Init()
+	Init() // Initiate the BackupData Class
 	table := backupData.envData.Getenv("TABLE_CONDITION")
 	err := json.Unmarshal([]byte(table), &backupData.data)
 	backupData.helper.LogError(err)
+	// Loop all the table in goroutines
 	for tableName, condition := range backupData.data {
 		wg.Add(1)
-		go DumpData(tableName, condition)
+		go DumpData(
+			strings.TrimSpace(tableName), 
+			strings.TrimSpace(condition))
 	}
 	wg.Wait()
 }
